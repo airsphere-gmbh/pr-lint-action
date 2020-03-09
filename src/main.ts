@@ -1,7 +1,8 @@
 import {GitHub} from '@actions/github/lib/github';
 
-const core = require('@actions/core');
-const github = require('@actions/github');
+import core from '@actions/core';
+import github from '@actions/github';
+import {Context} from '@actions/github/lib/context';
 
 async function run() {
   const githubContext = github.context;
@@ -9,30 +10,52 @@ async function run() {
   const githubClient: GitHub = new GitHub(githubToken);
 
   const titleRegex = new RegExp(core.getInput('title-regex'));
-  const title = githubContext.payload.pull_request.title;
+  const title = githubContext.payload.pull_request?.title;
 
-  const onFailedRegexComment = core.getInput('on-failed-regex-comment')
+  const bodyRegex = new RegExp(core.getInput('body.regex'));
+  const body = githubContext.payload.pull_request?.body as any;
+
+  const onFailedTitleComment = core
+    .getInput('on-failed-title-comment')
+    .replace('%regex%', titleRegex.source);
+  const onFailedBodyComment = core
+    .getInput('on-failed-body-comment')
     .replace('%regex%', titleRegex.source);
 
   core.debug(`Title Regex: ${titleRegex}`);
   core.debug(`Title: ${title}`);
 
   try {
-    if (!titleRegex.test(title)) {
-      core.setFailed(onFailedRegexComment);
-
-      const pr = githubContext.issue;
-      githubClient.pulls.createReview({
-        owner: pr.owner,
-        repo: pr.repo,
-        pull_number: pr.number,
-        body: onFailedRegexComment,
-        event: 'COMMENT'
-      });
-    }
+    test(githubClient, githubContext, onFailedTitleComment, titleRegex, title);
+    test(githubClient, githubContext, onFailedBodyComment, bodyRegex, body);
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+async function test(
+  client: GitHub,
+  context: Context,
+  comment: string,
+  test: RegExp,
+  value: any
+) {
+  if (!test.test(value)) {
+    core.setFailed(comment);
+
+    createReview(client, context, comment);
+  }
+}
+
+async function createReview(client: GitHub, context: Context, comment: string) {
+  const pr = context.issue;
+  client.pulls.createReview({
+    owner: pr.owner,
+    repo: pr.repo,
+    pull_number: pr.number,
+    body: comment,
+    event: 'COMMENT'
+  });
 }
 
 // noinspection JSIgnoredPromiseFromCall
