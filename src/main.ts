@@ -10,10 +10,10 @@ async function run() {
   const githubClient: GitHub = new GitHub(githubToken);
 
   const titleRegex = new RegExp(core.getInput('title-regex'));
-  const title = githubContext.payload.pull_request?.title;
+  const title = githubContext.payload.pull_request.title;
 
   const bodyRegex = new RegExp(core.getInput('body-regex'));
-  const body = githubContext.payload.pull_request?.body as any;
+  const body = githubContext.payload.pull_request.body as any;
 
   const onFailedTitleComment = core
     .getInput('on-failed-title-comment')
