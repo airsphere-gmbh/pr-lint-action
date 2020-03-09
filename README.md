@@ -19,8 +19,10 @@ jobs:
     steps:
     - uses: morrisoncole/pr-lint-action@v1.0.0
       with:
-        title-regex: "#EX-[0-9]+"
-        on-failed-regex-comment: "This is just an example. Failed regex: `%regex%`!"
+        title-regex: '#EX-[0-9]+'
+        on-failed-title-comment: 'This is just an example. Failed regex: `%regex%`!'
+        body-regex: '#EX-[0-9]+'
+        on-failed-body-comment: 'This is just an example. Failed regex: `%regex%`!'
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
 ```
