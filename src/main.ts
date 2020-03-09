@@ -12,7 +12,7 @@ async function run() {
   const titleRegex = new RegExp(core.getInput('title-regex'));
   const title = githubContext.payload.pull_request?.title;
 
-  const bodyRegex = new RegExp(core.getInput('body.regex'));
+  const bodyRegex = new RegExp(core.getInput('body-regex'));
   const body = githubContext.payload.pull_request?.body as any;
 
   const onFailedTitleComment = core
@@ -28,8 +28,22 @@ async function run() {
   core.debug(`Body: ${body}`);
 
   try {
-    await test(githubClient, githubContext, onFailedTitleComment, titleRegex, title);
-    await test(githubClient, githubContext, onFailedBodyComment, bodyRegex, body);
+    core.info('Test title against Regex');
+    await test(
+      githubClient,
+      githubContext,
+      onFailedTitleComment,
+      titleRegex,
+      title
+    );
+    core.info('Test body against Regex');
+    await test(
+      githubClient,
+      githubContext,
+      onFailedBodyComment,
+      bodyRegex,
+      body
+    );
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -46,6 +60,9 @@ async function test(
     core.setFailed(comment);
     core.debug(`Test for ${comment}`);
     await createReview(client, context, comment);
+    core.info('Test failed');
+  } else {
+    core.info('Test Successful');
   }
 }
 
