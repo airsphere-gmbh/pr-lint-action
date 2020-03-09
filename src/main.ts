@@ -24,10 +24,12 @@ async function run() {
 
   core.debug(`Title Regex: ${titleRegex}`);
   core.debug(`Title: ${title}`);
+  core.debug(`Body Regex: ${bodyRegex}`);
+  core.debug(`Body: ${body}`);
 
   try {
-    test(githubClient, githubContext, onFailedTitleComment, titleRegex, title);
-    test(githubClient, githubContext, onFailedBodyComment, bodyRegex, body);
+    await test(githubClient, githubContext, onFailedTitleComment, titleRegex, title);
+    await test(githubClient, githubContext, onFailedBodyComment, bodyRegex, body);
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -42,12 +44,13 @@ async function test(
 ) {
   if (!test.test(value)) {
     core.setFailed(comment);
-
-    createReview(client, context, comment);
+    core.debug(`Test for ${comment}`);
+    await createReview(client, context, comment);
   }
 }
 
 async function createReview(client: GitHub, context: Context, comment: string) {
+  core.debug(`Create review ${comment}`);
   const pr = context.issue;
   client.pulls.createReview({
     owner: pr.owner,
