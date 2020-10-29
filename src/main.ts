@@ -32,6 +32,8 @@ async function run(): Promise<void> {
 
   core.debug(`Title Regex: ${titleRegex.source}`);
   core.debug(`Title: ${title}`);
+  core.debug(`Body Regex: ${bodyRegex}`);
+  core.debug(`Body: ${body}`);
 
   const titleMatchesRegex: boolean = titleRegex.test(title);
   if (!titleMatchesRegex) {
