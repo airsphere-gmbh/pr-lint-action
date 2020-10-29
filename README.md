@@ -25,12 +25,14 @@ jobs:
       - uses: morrisoncole/pr-lint-action@v1.4.1
         with:
           title-regex: "#[eE][xX]-[0-9]+"
+          on-failed-title-comment: 'This is just an example. Failed regex: `%regex%`!'
+          body-regex: '#EX-[0-9]+'
+          on-failed-body-comment: 'This is just an example. Failed regex: `%regex%`!'
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"          
           on-failed-regex-fail-action: false
           on-failed-regex-request-changes: false
-          on-failed-regex-create-review: true
-          on-failed-regex-comment:
-            "This is just an example. Failed regex: `%regex%`!"
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          on-failed-regex-create-review: true       
+
 ```
 
 ## Changelog
