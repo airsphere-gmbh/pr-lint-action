@@ -11,7 +11,7 @@ const bodyRegexInput: string = core.getInput("body-regex", {
 });
 
 const onFailedTitelCommentInput: string = core.getInput(
-  "on-failed-titel-comment"
+  "on-failed-title-comment"
 );
 const onFailedBodyCommentInput: string = core.getInput(
   "on-failed-body-comment"
