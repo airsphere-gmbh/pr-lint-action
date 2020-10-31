@@ -2,6 +2,7 @@ const path = require("path");
 
 module.exports = {
   entry: "./src/main.ts",
+  target: "node14.15",
   module: {
     rules: [
       {
