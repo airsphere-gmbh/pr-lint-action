@@ -935,7 +935,7 @@
               })`
             : "<environment undetectable>";
         }
-        r.r(t), r.d(t, { Octokit: () => x });
+        r.r(t), r.d(t, { Octokit: () => q });
         var o = r(186);
         function n(e) {
           return "[object Object]" === Object.prototype.toString.call(e);
@@ -1398,7 +1398,7 @@
           method: "POST",
           url: "/graphql",
         });
-        const q = function (e) {
+        const x = function (e) {
           if (!e)
             throw new Error(
               "[@octokit/auth-token] No token passed to createTokenAuth"
@@ -1412,7 +1412,7 @@
             Object.assign(U.bind(null, e), { hook: j.bind(null, e) })
           );
         };
-        class x {
+        class q {
           constructor(e = {}) {
             const t = new o.Collection(),
               r = {
@@ -1457,7 +1457,7 @@
               );
               t.wrap("request", r.hook), (this.auth = r);
             } else if (e.auth) {
-              const r = q(e.auth);
+              const r = x(e.auth);
               t.wrap("request", r.hook), (this.auth = r);
             } else this.auth = async () => ({ type: "unauthenticated" });
             this.constructor.plugins.forEach((t) => {
@@ -1494,7 +1494,7 @@
             );
           }
         }
-        (x.VERSION = "3.1.2"), (x.plugins = []);
+        (q.VERSION = "3.1.2"), (q.plugins = []);
       },
       745: (e, t, r) => {
         "use strict";
@@ -3456,6 +3456,490 @@
               });
           }));
       },
+      752: function (e, t, r) {
+        "use strict";
+        var s =
+            (this && this.__createBinding) ||
+            (Object.create
+              ? function (e, t, r, s) {
+                  void 0 === s && (s = r),
+                    Object.defineProperty(e, s, {
+                      enumerable: !0,
+                      get: function () {
+                        return t[r];
+                      },
+                    });
+                }
+              : function (e, t, r, s) {
+                  void 0 === s && (s = r), (e[s] = t[r]);
+                }),
+          o =
+            (this && this.__setModuleDefault) ||
+            (Object.create
+              ? function (e, t) {
+                  Object.defineProperty(e, "default", {
+                    enumerable: !0,
+                    value: t,
+                  });
+                }
+              : function (e, t) {
+                  e.default = t;
+                }),
+          n =
+            (this && this.__importStar) ||
+            function (e) {
+              if (e && e.__esModule) return e;
+              var t = {};
+              if (null != e)
+                for (var r in e)
+                  "default" !== r &&
+                    Object.prototype.hasOwnProperty.call(e, r) &&
+                    s(t, e, r);
+              return o(t, e), t;
+            },
+          i =
+            (this && this.__awaiter) ||
+            function (e, t, r, s) {
+              return new (r || (r = Promise))(function (o, n) {
+                function i(e) {
+                  try {
+                    c(s.next(e));
+                  } catch (e) {
+                    n(e);
+                  }
+                }
+                function a(e) {
+                  try {
+                    c(s.throw(e));
+                  } catch (e) {
+                    n(e);
+                  }
+                }
+                function c(e) {
+                  var t;
+                  e.done
+                    ? o(e.value)
+                    : ((t = e.value),
+                      t instanceof r
+                        ? t
+                        : new r(function (e) {
+                            e(t);
+                          })).then(i, a);
+                }
+                c((s = s.apply(e, t || [])).next());
+              });
+            },
+          a =
+            (this && this.__generator) ||
+            function (e, t) {
+              var r,
+                s,
+                o,
+                n,
+                i = {
+                  label: 0,
+                  sent: function () {
+                    if (1 & o[0]) throw o[1];
+                    return o[1];
+                  },
+                  trys: [],
+                  ops: [],
+                };
+              return (
+                (n = { next: a(0), throw: a(1), return: a(2) }),
+                "function" == typeof Symbol &&
+                  (n[Symbol.iterator] = function () {
+                    return this;
+                  }),
+                n
+              );
+              function a(n) {
+                return function (a) {
+                  return (function (n) {
+                    if (r)
+                      throw new TypeError("Generator is already executing.");
+                    for (; i; )
+                      try {
+                        if (
+                          ((r = 1),
+                          s &&
+                            (o =
+                              2 & n[0]
+                                ? s.return
+                                : n[0]
+                                ? s.throw || ((o = s.return) && o.call(s), 0)
+                                : s.next) &&
+                            !(o = o.call(s, n[1])).done)
+                        )
+                          return o;
+                        switch (
+                          ((s = 0), o && (n = [2 & n[0], o.value]), n[0])
+                        ) {
+                          case 0:
+                          case 1:
+                            o = n;
+                            break;
+                          case 4:
+                            return i.label++, { value: n[1], done: !1 };
+                          case 5:
+                            i.label++, (s = n[1]), (n = [0]);
+                            continue;
+                          case 7:
+                            (n = i.ops.pop()), i.trys.pop();
+                            continue;
+                          default:
+                            if (
+                              !(
+                                (o =
+                                  (o = i.trys).length > 0 && o[o.length - 1]) ||
+                                (6 !== n[0] && 2 !== n[0])
+                              )
+                            ) {
+                              i = 0;
+                              continue;
+                            }
+                            if (
+                              3 === n[0] &&
+                              (!o || (n[1] > o[0] && n[1] < o[3]))
+                            ) {
+                              i.label = n[1];
+                              break;
+                            }
+                            if (6 === n[0] && i.label < o[1]) {
+                              (i.label = o[1]), (o = n);
+                              break;
+                            }
+                            if (o && i.label < o[2]) {
+                              (i.label = o[2]), i.ops.push(n);
+                              break;
+                            }
+                            o[2] && i.ops.pop(), i.trys.pop();
+                            continue;
+                        }
+                        n = t.call(e, i);
+                      } catch (e) {
+                        (n = [6, e]), (s = 0);
+                      } finally {
+                        r = o = 0;
+                      }
+                    if (5 & n[0]) throw n[1];
+                    return { value: n[0] ? n[1] : void 0, done: !0 };
+                  })([n, a]);
+                };
+              }
+            };
+        Object.defineProperty(t, "__esModule", { value: !0 }), (t.App = void 0);
+        var c = n(r(142)),
+          p = n(r(225)),
+          u = r(142),
+          l = (function () {
+            function e(e, t) {
+              (this.config = t),
+                (this.githubClient = u.getOctokit(e)),
+                (this.gitHubContext = c.context);
+            }
+            return (
+              (e.prototype.Run = function () {
+                var t, r, s, o;
+                return i(this, void 0, void 0, function () {
+                  var n, i, c, u, l, d;
+                  return a(this, function (a) {
+                    switch (a.label) {
+                      case 0:
+                        return (
+                          (n = this.gitHubContext.issue),
+                          (i =
+                            null !==
+                              (r =
+                                null ===
+                                  (t = this.gitHubContext.payload
+                                    .pull_request) || void 0 === t
+                                  ? void 0
+                                  : t.title) && void 0 !== r
+                              ? r
+                              : ""),
+                          p.debug("Get Title: " + i),
+                          (c =
+                            null !==
+                              (o =
+                                null ===
+                                  (s = this.gitHubContext.payload
+                                    .pull_request) || void 0 === s
+                                  ? void 0
+                                  : s.body) && void 0 !== o
+                              ? o
+                              : ""),
+                          p.debug("Get Body: " + c),
+                          p.debug(
+                            "Test title against Regex: " +
+                              this.config.TitelRegex
+                          ),
+                          (u = e.testAgainstPattern(i, this.config.TitelRegex)),
+                          p.debug(
+                            "Test body against Regex: " + this.config.BodyRegex
+                          ),
+                          (l = e.testAgainstPattern(c, this.config.BodyRegex)),
+                          (d = ""),
+                          u ||
+                            ((d += this.config.OnFailedTitelComment.replace(
+                              "%regex%",
+                              this.config.TitelRegex
+                            )),
+                            p.debug("Titel regex failed")),
+                          l ||
+                            (d.length > 1 && (d += ". "),
+                            (d += this.config.OnFailedBodyComment.replace(
+                              "%regex%",
+                              this.config.BodyRegex
+                            )),
+                            p.debug("Body regex failed")),
+                          u && l
+                            ? [3, 1]
+                            : (this.config.CreateReviewOnFailedRegex &&
+                                (p.debug("Create Review with comment " + d),
+                                this.createReview(d, n)),
+                              this.config.FailActionOnFailedRegex &&
+                                (p.debug("Fail action with comment " + d),
+                                p.setFailed(d)),
+                              [3, 3])
+                        );
+                      case 1:
+                        return this.config.CreateReviewOnFailedRegex
+                          ? (p.debug("Dismiss review"),
+                            [4, this.dismissReview(n)])
+                          : [3, 3];
+                      case 2:
+                        a.sent(), (a.label = 3);
+                      case 3:
+                        return p.debug("Execute finished"), [2];
+                    }
+                  });
+                });
+              }),
+              (e.prototype.createReview = function (e, t) {
+                return i(this, void 0, void 0, function () {
+                  return a(this, function (r) {
+                    switch (r.label) {
+                      case 0:
+                        return [
+                          4,
+                          this.githubClient.pulls.createReview({
+                            owner: t.owner,
+                            repo: t.repo,
+                            pull_number: t.number,
+                            body: e,
+                            event: this.config.RequestChangesOnFailedRegex
+                              ? "REQUEST_CHANGES"
+                              : "COMMENT",
+                          }),
+                        ];
+                      case 1:
+                        return r.sent(), [2];
+                    }
+                  });
+                });
+              }),
+              (e.prototype.dismissReview = function (e) {
+                return i(this, void 0, void 0, function () {
+                  var t = this;
+                  return a(this, function (r) {
+                    switch (r.label) {
+                      case 0:
+                        return [
+                          4,
+                          this.githubClient.pulls.listReviews({
+                            owner: e.owner,
+                            repo: e.repo,
+                            pull_number: e.number,
+                          }),
+                        ];
+                      case 1:
+                        return (
+                          r.sent().data.forEach(function (r) {
+                            return i(t, void 0, void 0, function () {
+                              return a(this, function (t) {
+                                switch (t.label) {
+                                  case 0:
+                                    return "github-actions[bot]" != r.user.login
+                                      ? [3, 2]
+                                      : [
+                                          4,
+                                          this.githubClient.pulls.dismissReview(
+                                            {
+                                              owner: e.owner,
+                                              repo: e.repo,
+                                              pull_number: e.number,
+                                              review_id: r.id,
+                                              message: "All good!",
+                                            }
+                                          ),
+                                        ];
+                                  case 1:
+                                    t.sent(), (t.label = 2);
+                                  case 2:
+                                    return [2];
+                                }
+                              });
+                            });
+                          }),
+                          [2]
+                        );
+                    }
+                  });
+                });
+              }),
+              (e.testAgainstPattern = function (e, t) {
+                return new RegExp(t).test(e);
+              }),
+              e
+            );
+          })();
+        t.App = l;
+      },
+      489: function (e, t, r) {
+        "use strict";
+        var s =
+            (this && this.__createBinding) ||
+            (Object.create
+              ? function (e, t, r, s) {
+                  void 0 === s && (s = r),
+                    Object.defineProperty(e, s, {
+                      enumerable: !0,
+                      get: function () {
+                        return t[r];
+                      },
+                    });
+                }
+              : function (e, t, r, s) {
+                  void 0 === s && (s = r), (e[s] = t[r]);
+                }),
+          o =
+            (this && this.__setModuleDefault) ||
+            (Object.create
+              ? function (e, t) {
+                  Object.defineProperty(e, "default", {
+                    enumerable: !0,
+                    value: t,
+                  });
+                }
+              : function (e, t) {
+                  e.default = t;
+                }),
+          n =
+            (this && this.__importStar) ||
+            function (e) {
+              if (e && e.__esModule) return e;
+              var t = {};
+              if (null != e)
+                for (var r in e)
+                  "default" !== r &&
+                    Object.prototype.hasOwnProperty.call(e, r) &&
+                    s(t, e, r);
+              return o(t, e), t;
+            };
+        Object.defineProperty(t, "__esModule", { value: !0 }),
+          (t.Input = void 0);
+        var i = n(r(225)),
+          a = (function () {
+            function e() {}
+            return (
+              (e.getInput = function (e, t, r) {
+                var s = i.getInput(e, { required: t });
+                return i.debug("Input: " + e + " = " + s), r(s);
+              }),
+              (e.getInputAsString = function (e, t) {
+                var r = i.getInput(e, { required: t });
+                return i.debug("Input: " + e + " = " + r), r;
+              }),
+              (e.convertToBoolean = function (e) {
+                if ("true" == e || "True" == e || "TRUE" == e) return !0;
+                if ("false" == e || "False" == e || "FALSE" == e) return !1;
+                throw new Error(e + " can not converted into boolean");
+              }),
+              e
+            );
+          })();
+        t.Input = a;
+      },
+      519: function (e, t, r) {
+        "use strict";
+        var s =
+            (this && this.__createBinding) ||
+            (Object.create
+              ? function (e, t, r, s) {
+                  void 0 === s && (s = r),
+                    Object.defineProperty(e, s, {
+                      enumerable: !0,
+                      get: function () {
+                        return t[r];
+                      },
+                    });
+                }
+              : function (e, t, r, s) {
+                  void 0 === s && (s = r), (e[s] = t[r]);
+                }),
+          o =
+            (this && this.__setModuleDefault) ||
+            (Object.create
+              ? function (e, t) {
+                  Object.defineProperty(e, "default", {
+                    enumerable: !0,
+                    value: t,
+                  });
+                }
+              : function (e, t) {
+                  e.default = t;
+                }),
+          n =
+            (this && this.__importStar) ||
+            function (e) {
+              if (e && e.__esModule) return e;
+              var t = {};
+              if (null != e)
+                for (var r in e)
+                  "default" !== r &&
+                    Object.prototype.hasOwnProperty.call(e, r) &&
+                    s(t, e, r);
+              return o(t, e), t;
+            };
+        Object.defineProperty(t, "__esModule", { value: !0 });
+        var i = r(752),
+          a = r(489),
+          c = n(r(225)),
+          p = c.getInput("repo-token", { required: !0 }),
+          u = a.Input.getInputAsString("title-regex", !0),
+          l = a.Input.getInputAsString("body-regex", !0),
+          d = a.Input.getInputAsString("on-failed-title-comment", !0),
+          m = a.Input.getInputAsString("on-failed-body-comment", !0),
+          g = a.Input.getInput(
+            "on-failed-regex-create-review",
+            !1,
+            a.Input.convertToBoolean
+          ),
+          h = a.Input.getInput(
+            "on-failed-regex-fail-action",
+            !1,
+            a.Input.convertToBoolean
+          ),
+          T = a.Input.getInput(
+            "on-failed-regex-request-changes",
+            !1,
+            a.Input.convertToBoolean
+          );
+        new i.App(p, {
+          BodyRegex: l,
+          TitelRegex: u,
+          OnFailedBodyComment: m,
+          OnFailedTitelComment: d,
+          CreateReviewOnFailedRegex: g,
+          FailActionOnFailedRegex: h,
+          RequestChangesOnFailedRegex: T,
+        })
+          .Run()
+          .catch(function (e) {
+            return c.setFailed(e);
+          });
+      },
       149: (e, t, r) => {
         e.exports = r(468);
       },
@@ -3722,120 +4206,5 @@
         Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
         Object.defineProperty(e, "__esModule", { value: !0 });
     }),
-    (() => {
-      "use strict";
-      var e = r(142),
-        t = r(225);
-      class s {
-        constructor(t, r) {
-          (this.config = r),
-            (this.githubClient = (0, e.getOctokit)(t)),
-            (this.gitHubContext = e.context);
-        }
-        async Run() {
-          const e = this.gitHubContext.issue,
-            r = this.gitHubContext.payload.pull_request?.title ?? "";
-          t.debug("Get Title: " + r);
-          const o = this.gitHubContext.payload.pull_request?.body ?? "";
-          t.debug("Get Body: " + o),
-            t.debug("Test title against Regex: " + this.config.TitelRegex);
-          let n = s.testAgainstPattern(r, this.config.TitelRegex);
-          t.debug("Test body against Regex: " + this.config.BodyRegex);
-          let i = s.testAgainstPattern(o, this.config.BodyRegex),
-            a = "";
-          n ||
-            ((a += this.config.OnFailedTitelComment.replace(
-              "%regex%",
-              this.config.TitelRegex
-            )),
-            t.debug("Titel regex failed")),
-            i ||
-              (a.length > 1 && (a += ". "),
-              (a += this.config.OnFailedBodyComment.replace(
-                "%regex%",
-                this.config.BodyRegex
-              )),
-              t.debug("Body regex failed")),
-            n && i
-              ? this.config.CreateReviewOnFailedRegex &&
-                (t.debug("Dismiss review"), await this.dismissReview(e))
-              : (this.config.CreateReviewOnFailedRegex &&
-                  (t.debug("Create Review with comment " + a),
-                  this.createReview(a, e)),
-                this.config.FailActionOnFailedRegex &&
-                  (t.debug("Fail action with comment " + a), t.setFailed(a))),
-            t.debug("Execute finished");
-        }
-        async createReview(e, t) {
-          await this.githubClient.pulls.createReview({
-            owner: t.owner,
-            repo: t.repo,
-            pull_number: t.number,
-            body: e,
-            event: this.config.RequestChangesOnFailedRegex
-              ? "REQUEST_CHANGES"
-              : "COMMENT",
-          });
-        }
-        async dismissReview(e) {
-          (
-            await this.githubClient.pulls.listReviews({
-              owner: e.owner,
-              repo: e.repo,
-              pull_number: e.number,
-            })
-          ).data.forEach(async (t) => {
-            "github-actions[bot]" == t.user.login &&
-              (await this.githubClient.pulls.dismissReview({
-                owner: e.owner,
-                repo: e.repo,
-                pull_number: e.number,
-                review_id: t.id,
-                message: "All good!",
-              }));
-          });
-        }
-        static testAgainstPattern(e, t) {
-          return new RegExp(t).test(e);
-        }
-      }
-      class o {
-        static getInput(e, r, s) {
-          const o = t.getInput(e, { required: r });
-          return t.debug("Input: " + e + " = " + o), s(o);
-        }
-        static getInputAsString(e, r) {
-          const s = t.getInput(e, { required: r });
-          return t.debug("Input: " + e + " = " + s), s;
-        }
-        static convertToBoolean(e) {
-          if ("true" == e || "True" == e || "TRUE" == e) return !0;
-          if ("false" == e || "False" == e || "FALSE" == e) return !1;
-          throw new Error(e + " can not converted into boolean");
-        }
-      }
-      const n = t.getInput("repo-token", { required: !0 }),
-        i = o.getInputAsString("title-regex", !0),
-        a = o.getInputAsString("body-regex", !0),
-        c = o.getInputAsString("on-failed-title-comment", !0),
-        p = o.getInputAsString("on-failed-body-comment", !0),
-        u = o.getInput("on-failed-regex-create-review", !1, o.convertToBoolean),
-        l = o.getInput("on-failed-regex-fail-action", !1, o.convertToBoolean),
-        d = o.getInput(
-          "on-failed-regex-request-changes",
-          !1,
-          o.convertToBoolean
-        );
-      new s(n, {
-        BodyRegex: a,
-        TitelRegex: i,
-        OnFailedBodyComment: p,
-        OnFailedTitelComment: c,
-        CreateReviewOnFailedRegex: u,
-        FailActionOnFailedRegex: l,
-        RequestChangesOnFailedRegex: d,
-      })
-        .Run()
-        .catch((e) => t.setFailed(e));
-    })();
+    r(519);
 })();
