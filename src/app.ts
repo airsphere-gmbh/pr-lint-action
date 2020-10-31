@@ -21,15 +21,17 @@ export class App {
     const title: string =
       (this.gitHubContext.payload.pull_request?.title as string) ?? "";
 
+    core.debug("Get Title: " + title);
+
     const body: string =
       (this.gitHubContext.payload.pull_request?.body as string) ?? "";
 
-    // const comment = onFailedRegexCommentInput.replace(
-    //   "%regex%",
-    //   titleRegex.source
-    // );
+    core.debug("Get Body: " + body);
 
+    core.debug("Test title against Regex: " + this.config.TitelRegex);
     let titelResult = App.testAgainstPattern(title, this.config.TitelRegex);
+
+    core.debug("Test body against Regex: " + this.config.BodyRegex);
     let bodyResult = App.testAgainstPattern(body, this.config.BodyRegex);
     let comment = "";
 
@@ -38,6 +40,8 @@ export class App {
         "%regex%",
         this.config.TitelRegex
       );
+
+      core.debug("Titel regex failed");
     }
 
     if (!bodyResult) {
@@ -48,21 +52,27 @@ export class App {
         "%regex%",
         this.config.BodyRegex
       );
+      core.debug("Body regex failed");
     }
 
     if (!titelResult || !bodyResult) {
       if (this.config.CreateReviewOnFailedRegex) {
+        core.debug("Create Review with comment " + comment);
         this.createReview(comment, pullRequest);
       }
 
       if (this.config.FailActionOnFailedRegex) {
+        core.debug("Fail action with comment " + comment);
         core.setFailed(comment);
       }
     } else {
       if (this.config.CreateReviewOnFailedRegex) {
+        core.debug("Dismiss review");
         await this.dismissReview(pullRequest);
       }
     }
+
+    core.debug("Execute finished");
   }
 
   private async createReview(
