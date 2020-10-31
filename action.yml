@@ -1,6 +1,6 @@
-name: "Pull Request Linter"
-description: "Ensure your PR titles match a given regex."
-author: "MorrisonCole"
+name: "Pull Request Linter - AirSphere flavor"
+description: "Ensure your PR titles and bodys match a given regex."
+author: "MorrisonCole, Maximilian Krüger"
 branding:
   icon: "check"
   color: "green"

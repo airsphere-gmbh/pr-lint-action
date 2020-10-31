@@ -22,20 +22,27 @@ jobs:
   pr-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: morrisoncole/pr-lint-action@v1.4.1
+      - uses: airsphere-gmbh/pr-lint-action@v2.0
         with:
           title-regex: "#[eE][xX]-[0-9]+"
-          on-failed-title-comment: 'This is just an example. Failed regex: `%regex%`!'
-          body-regex: '#EX-[0-9]+'
-          on-failed-body-comment: 'This is just an example. Failed regex: `%regex%`!'
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"          
+          body-regex: "#[eE][xX]-[0-9]+"
+          on-failed-body-comment:
+            "This is just an example. Failed regex: `%regex%`!"
+          on-failed-title-comment:
+            "This is just an example. Failed regex: `%regex%`!"
           on-failed-regex-fail-action: false
           on-failed-regex-request-changes: false
-          on-failed-regex-create-review: true       
-
+          on-failed-regex-create-review: true
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
 ```
 
 ## Changelog
+
+### v2.0
+- Inserted custom AirSphere functionalitys
+- Use Webpack to build and minify
+- Use directly node12 instead a docker image
+- Rewrite functionality to reduce javascript elements
 
 ### v1.4.1
 
