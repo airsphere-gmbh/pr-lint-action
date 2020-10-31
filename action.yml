@@ -19,7 +19,7 @@ inputs:
       doesn't match."
     required: false
     default: true
-  on-failed-titel-comment:
+  on-failed-title-comment:
     description:
       "Comment for the bot to post on PRs that fail the regex. Use %regex% to
       reference regex."
