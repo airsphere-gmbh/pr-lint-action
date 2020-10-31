@@ -1,5 +1,5 @@
 FROM node:14.15.0-slim
 
-COPY /dist/main.js main.js
+COPY . . 
 
-ENTRYPOINT ["node", "main.js"]
+ENTRYPOINT ["node", "dist/main.js"]
