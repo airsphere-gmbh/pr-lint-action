@@ -1,6 +1,6 @@
-name: "Pull Request Linter"
-description: "Ensure your PR titles match a given regex."
-author: "MorrisonCole"
+name: "Pull Request Linter - AirSphere flavor"
+description: "Ensure your PR titles and bodys match a given regex."
+author: "MorrisonCole, Maximilian Krüger"
 branding:
   icon: "check"
   color: "green"
@@ -9,13 +9,23 @@ inputs:
     description: "Regex to ensure PR title matches. Allows anything by default."
     required: true
     default: ".*"
+  body-regex:
+    description: "Regex to ensure PR Body matches. Allows anything by default."
+    required: true
+    default: ".*"
   on-failed-regex-create-review:
     description:
       "Whether the action should create a PR review & comment when the regex
       doesn't match."
     required: false
     default: true
-  on-failed-regex-comment:
+  on-failed-titel-comment:
+    description:
+      "Comment for the bot to post on PRs that fail the regex. Use %regex% to
+      reference regex."
+    required: false
+    default: "PR title failed to match %regex%."
+  on-failed-body-comment:
     description:
       "Comment for the bot to post on PRs that fail the regex. Use %regex% to
       reference regex."
@@ -35,5 +45,5 @@ inputs:
       "Github token with access to the repository (secrets.GITHUB_TOKEN)."
     required: true
 runs:
-  using: "docker"
-  image: "Dockerfile"
+  using: "node12"
+  main: "dist/main.js"

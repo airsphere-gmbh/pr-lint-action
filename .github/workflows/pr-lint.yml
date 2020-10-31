@@ -12,12 +12,16 @@ jobs:
   pr-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: morrisoncole/pr-lint-action@main
+      - uses: airsphere-gmbh/pr-lint-action@stable
         with:
-          title-regex: "#[eE][xX]-[0-9]+"
+          title-regex: '^\W*(PAX-I\d+)(\W+\w+){2,}'
+          on-failed-title-comment:
+            "Your pull request must have a meaningful title beginning with a
+            ticket number (PAX-I123 or [PAX-I123])."
+          body-regex: '\W*(\w+\W+){5,}'
+          on-failed-body-comment:
+            "Your pull request must have a meaningful description."
           on-failed-regex-fail-action: false
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false
-          on-failed-regex-comment:
-            "This is just an example. Failed regex: `%regex%`!"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"

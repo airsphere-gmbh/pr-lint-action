@@ -1,16 +1,15 @@
 {
   "name": "pr-lint-action",
-  "version": "1.1.1",
+  "version": "2.0",
   "description": "A GitHub Action to ensure that your PR title matches a given regex.",
-  "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "lint:eslint": "eslint . --ext .ts",
     "lint:prettier": "prettier \"**/*.{ts,md,json,yml}\" --write"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MorrisonCole/pr-lint-action"
+    "url": "git+https://github.com/airsphere-gmbh/pr-lint-action.git"
   },
   "keywords": [
     "actions",
@@ -18,8 +17,8 @@
     "toolkit",
     "lint"
   ],
-  "author": "Morrison Cole <admin@morrisoncole.co.uk>",
-  "license": "ISC",
+  "author": "Morrison Cole <admin@morrisoncole.co.uk>, Maximilian Krüger <maximilian.krueger@airsphere.de",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MorrisonCole/pr-lint-action/issues"
   },
@@ -35,6 +34,9 @@
     "eslint": "7.12.1",
     "eslint-config-prettier": "6.15.0",
     "prettier": "2.1.2",
-    "typescript": "4.0.5"
+    "ts-loader": "^8.0.7",
+    "typescript": "4.0.5",
+    "webpack": "^5.3.1",
+    "webpack-cli": "^4.1.0"
   }
 }
