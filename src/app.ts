@@ -34,11 +34,20 @@ export class App {
     let comment = "";
 
     if (!titelResult) {
-      comment += this.config.OnFailedTitelComment;
+      comment += this.config.OnFailedTitelComment.replace(
+        "%regex%",
+        this.config.TitelRegex
+      );
     }
 
     if (!bodyResult) {
-      comment += this.config.OnFailedBodyComment;
+      if (comment.length > 1) {
+        comment += ". ";
+      }
+      comment += this.config.OnFailedBodyComment.replace(
+        "%regex%",
+        this.config.BodyRegex
+      );
     }
 
     if (!titelResult || !bodyResult) {
