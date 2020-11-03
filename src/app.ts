@@ -45,9 +45,6 @@ export class App {
     }
 
     if (!bodyResult) {
-      if (comment.length > 1) {
-        comment += ". ";
-      }
       comment += this.config.OnFailedBodyComment.replace(
         "%regex%",
         this.config.BodyRegex
