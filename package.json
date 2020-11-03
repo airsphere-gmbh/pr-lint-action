@@ -17,7 +17,7 @@
     "toolkit",
     "lint"
   ],
-  "author": "Morrison Cole <admin@morrisoncole.co.uk>, Maximilian Krüger <maximilian.krueger@airsphere.de",
+  "author": "Morrison Cole <admin@morrisoncole.co.uk>, Maximilian Krüger <maximilian.krueger@airsphere.de>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MorrisonCole/pr-lint-action/issues"
