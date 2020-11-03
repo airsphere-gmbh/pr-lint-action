@@ -1,82 +1,48 @@
-import {GitHub} from '@actions/github/lib/github';
+import { App } from "./app";
+import { Input } from "./input";
+import * as core from "@actions/core";
 
-import core from '@actions/core';
-import github from '@actions/github';
-import {Context} from '@actions/github/lib/context';
+const repoTokenInput = core.getInput("repo-token", { required: true });
 
-async function run() {
-  const githubContext = github.context;
-  const githubToken = core.getInput('repo-token');
-  const githubClient: GitHub = new GitHub(githubToken);
+const titleRegexInput = Input.getInputAsString("title-regex", true);
 
-  const titleRegex = new RegExp(core.getInput('title-regex'));
-  const title = githubContext.payload.pull_request.title;
+const bodyRegexInput = Input.getInputAsString("body-regex", true);
 
-  const bodyRegex = new RegExp(core.getInput('body-regex'));
-  const body = githubContext.payload.pull_request.body as any;
+const onFailedTitelCommentInput = Input.getInputAsString(
+  "on-failed-title-comment",
+  true
+);
 
-  const onFailedTitleComment = core
-    .getInput('on-failed-title-comment')
-    .replace('%regex%', titleRegex.source);
-  const onFailedBodyComment = core
-    .getInput('on-failed-body-comment')
-    .replace('%regex%', titleRegex.source);
+const onFailedBodyCommentInput = Input.getInputAsString(
+  "on-failed-body-comment",
+  true
+);
 
-  core.debug(`Title Regex: ${titleRegex}`);
-  core.debug(`Title: ${title}`);
-  core.debug(`Body Regex: ${bodyRegex}`);
-  core.debug(`Body: ${body}`);
+const onFailedRegexCreateReviewInput = Input.getInput(
+  "on-failed-regex-create-review",
+  false,
+  Input.convertToBoolean
+);
 
-  try {
-    core.info('Test title against Regex');
-    await test(
-      githubClient,
-      githubContext,
-      onFailedTitleComment,
-      titleRegex,
-      title
-    );
-    core.info('Test body against Regex');
-    await test(
-      githubClient,
-      githubContext,
-      onFailedBodyComment,
-      bodyRegex,
-      body
-    );
-  } catch (error) {
-    core.setFailed(error.message);
-  }
-}
+const onFailedRegexFailActionInput = Input.getInput(
+  "on-failed-regex-fail-action",
+  false,
+  Input.convertToBoolean
+);
 
-async function test(
-  client: GitHub,
-  context: Context,
-  comment: string,
-  test: RegExp,
-  value: any
-) {
-  if (!test.test(value)) {
-    core.setFailed(comment);
-    core.debug(`Test for ${comment}`);
-    await createReview(client, context, comment);
-    core.info('Test failed');
-  } else {
-    core.info('Test Successful');
-  }
-}
+const onFailedRegexRequestChanges = Input.getInput(
+  "on-failed-regex-request-changes",
+  false,
+  Input.convertToBoolean
+);
 
-async function createReview(client: GitHub, context: Context, comment: string) {
-  core.debug(`Create review ${comment}`);
-  const pr = context.issue;
-  client.pulls.createReview({
-    owner: pr.owner,
-    repo: pr.repo,
-    pull_number: pr.number,
-    body: comment,
-    event: 'COMMENT'
-  });
-}
-
-// noinspection JSIgnoredPromiseFromCall
-run();
+const app = new App(repoTokenInput, {
+  BodyRegex: bodyRegexInput,
+  TitelRegex: titleRegexInput,
+  OnFailedBodyComment: onFailedBodyCommentInput,
+  OnFailedTitelComment: onFailedTitelCommentInput,
+  CreateReviewOnFailedRegex: onFailedRegexCreateReviewInput,
+  FailActionOnFailedRegex: onFailedRegexFailActionInput,
+  RequestChangesOnFailedRegex: onFailedRegexRequestChanges,
+});
+app.Run().catch((error) => core.setFailed(error));

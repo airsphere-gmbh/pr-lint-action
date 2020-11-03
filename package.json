@@ -1,43 +1,42 @@
 {
-  "name": "container-toolkit-template",
-  "version": "0.0.0",
-  "description": "Container template action using actions/toolkit",
-  "main": "lib/main.js",
+  "name": "pr-lint-action",
+  "version": "2.0",
+  "description": "A GitHub Action to ensure that your PR title matches a given regex.",
   "scripts": {
-    "build": "tsc",
-    "format": "prettier --write **/*.ts",
-    "test": "jest"
+    "build": "webpack",
+    "lint:eslint": "eslint . --ext .ts",
+    "lint:prettier": "prettier \"**/*.{ts,md,json,yml}\" --write"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/container-toolkit-template.git"
+    "url": "git+https://github.com/airsphere-gmbh/pr-lint-action.git"
   },
   "keywords": [
     "actions",
     "container",
     "toolkit",
-    "setup"
+    "lint"
   ],
-  "author": "GitHub",
-  "license": "ISC",
+  "author": "Morrison Cole <admin@morrisoncole.co.uk>, Maximilian Krüger <maximilian.krueger@airsphere.de>",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actions/container-toolkit-template/issues"
+    "url": "https://github.com/MorrisonCole/pr-lint-action/issues"
   },
-  "homepage": "https://github.com/actions/container-toolkit-template#readme",
+  "homepage": "https://github.com/MorrisonCole/pr-lint-action#readme",
   "dependencies": {
-    "@actions/core": "^1.0.0",
-    "@actions/exec": "^1.0.0",
-    "@actions/github": "^1.0.0",
-    "@actions/io": "^1.0.0",
-    "@actions/tool-cache": "^1.0.0"
+    "@actions/core": "1.2.6",
+    "@actions/github": "4.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
-    "@types/node": "^12.0.4",
-    "jest": "^24.8.0",
-    "jest-circus": "^24.7.1",
-    "prettier": "^1.17.1",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.8.3"
+    "@types/node": "14.14.6",
+    "@typescript-eslint/eslint-plugin": "4.6.0",
+    "@typescript-eslint/parser": "4.6.0",
+    "eslint": "7.12.1",
+    "eslint-config-prettier": "6.15.0",
+    "prettier": "2.1.2",
+    "ts-loader": "^8.0.7",
+    "typescript": "4.0.5",
+    "webpack": "^5.3.1",
+    "webpack-cli": "^4.1.0"
   }
 }

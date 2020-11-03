@@ -1,5 +1,9 @@
+# JetBrains
 .idea/
 
-package-lock.json
-yarn.lock
+# Packages
 node_modules
+
+#Dist
+/dist/*
+!/dist/main.js
