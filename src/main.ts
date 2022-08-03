@@ -2,6 +2,7 @@ import { App } from "./app";
 import { Input } from "./input";
 import { getInput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
+import { lastValueFrom } from "rxjs";
 
 const repoTokenInput = getInput("repo-token", { required: true });
 
@@ -49,4 +50,14 @@ const app = new App(client, context, {
   RequestChangesOnFailedRegex: onFailedRegexRequestChanges,
 });
 
-app.Run().catch((error) => setFailed(error));
+// const res = await client.pulls.get();
+
+app.init();
+
+try {
+  await lastValueFrom(app.run(), { defaultValue: undefined });
+} catch (ex: any) {
+  setFailed(ex);
+} finally {
+  app.tearDown();
+}

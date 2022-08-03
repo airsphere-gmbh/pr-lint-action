@@ -1,6 +1,16 @@
 import { debug, setFailed } from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
+import {
+  map,
+  Observable,
+  from,
+  concatAll,
+  mergeMap,
+  filter,
+  of,
+  EMPTY,
+} from "rxjs";
 
 type Issue = {
   owner: string;
@@ -17,7 +27,11 @@ export class App {
     private readonly config: AppConfig
   ) {}
 
-  public async Run(): Promise<void> {
+  public init() {}
+
+  public tearDown() {}
+
+  public run(): Observable<any> {
     const pullRequest = this.actionContext.issue;
 
     const title: string =
@@ -55,58 +69,72 @@ export class App {
     }
 
     if (!titelResult || !bodyResult) {
-      if (this.config.CreateReviewOnFailedRegex) {
-        debug("Create Review with comment " + comment);
-        this.createReview(comment, pullRequest);
-      }
-
       if (this.config.FailActionOnFailedRegex) {
         debug("Fail action with comment " + comment);
         setFailed(comment);
       }
+      if (this.config.CreateReviewOnFailedRegex) {
+        debug("Create Review with comment " + comment);
+        return this.createReview(of([comment, pullRequest]));
+      }
     } else {
       if (this.config.CreateReviewOnFailedRegex) {
         debug("Dismiss review");
-        await this.dismissReview(pullRequest);
+        return this.dismissReview(of(pullRequest));
       }
     }
 
-    debug("Execute finished");
+    return EMPTY;
   }
 
-  private async createReview(
-    comment: string,
-    pullRequest: Issue
-  ): Promise<void> {
-    await this.client.pulls.createReview({
-      owner: pullRequest.owner,
-      repo: pullRequest.repo,
-      pull_number: pullRequest.number,
-      body: comment,
-      event: this.config.RequestChangesOnFailedRegex
-        ? "REQUEST_CHANGES"
-        : "COMMENT",
-    });
+  private createReview(reviews: Observable<[string, Issue]>): Observable<any> {
+    return reviews.pipe(
+      map(([comment, pullRequest]) =>
+        from(
+          this.client.pulls.createReview({
+            owner: pullRequest.owner,
+            repo: pullRequest.repo,
+            pull_number: pullRequest.number,
+            body: comment,
+            event: this.config.RequestChangesOnFailedRegex
+              ? "REQUEST_CHANGES"
+              : "COMMENT",
+          })
+        )
+      ),
+      concatAll()
+    );
   }
 
-  private async dismissReview(pullRequest: Issue): Promise<void> {
-    const reviews = await this.client.pulls.listReviews({
-      owner: pullRequest.owner,
-      repo: pullRequest.repo,
-      pull_number: pullRequest.number,
-    });
-
-    reviews.data.forEach(async (review) => {
-      if (review.user?.login === "github-actions[bot]") {
-        await this.client.pulls.dismissReview({
-          owner: pullRequest.owner,
-          repo: pullRequest.repo,
-          pull_number: pullRequest.number,
-          review_id: review.id,
-          message: "All good!",
-        });
-      }
-    });
+  private dismissReview(pullRequests: Observable<Issue>): Observable<any> {
+    return pullRequests.pipe(
+      map((pullRequest) =>
+        from(
+          this.client.pulls.listReviews({
+            owner: pullRequest.owner,
+            repo: pullRequest.repo,
+            pull_number: pullRequest.number,
+          })
+        ).pipe(
+          mergeMap((response) => response.data),
+          filter((review) => review.user?.login === "github-actions[bot]"),
+          map((review) =>
+            from(
+              this.client.pulls.dismissReview({
+                owner: pullRequest.owner,
+                repo: pullRequest.repo,
+                pull_number: pullRequest.number,
+                review_id: review.id,
+                message: "All good!",
+              })
+            )
+          ),
+          concatAll(),
+          map((response) => response.data)
+        )
+      ),
+      concatAll()
+    );
   }
 
   private static testAgainstPattern(value: string, pattern: string): boolean {
