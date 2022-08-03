@@ -28,7 +28,7 @@ module.exports = {
     },
   },
   output: {
-    filename: "app.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: "action.js",
+    path: path.resolve(__dirname, "dist/setup"),
   },
 };

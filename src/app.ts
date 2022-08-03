@@ -1,37 +1,39 @@
-import * as github from "@actions/github";
-import * as core from "@actions/core";
-import { getOctokit } from "@actions/github";
+import { debug, setFailed } from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
 
-export class App {
-  private readonly config: AppConfig;
-  private readonly githubClient: InstanceType<typeof GitHub>;
-  private readonly gitHubContext: Context;
+type Issue = {
+  owner: string;
+  repo: string;
+  number: number;
+};
 
-  constructor(token: string, config: AppConfig) {
-    this.config = config;
-    this.githubClient = getOctokit(token);
-    this.gitHubContext = github.context;
-  }
+type GitHubClient = InstanceType<typeof GitHub>;
+
+export class App {
+  constructor(
+    private readonly client: GitHubClient,
+    private readonly actionContext: Context,
+    private readonly config: AppConfig
+  ) {}
 
   public async Run(): Promise<void> {
-    const pullRequest = this.gitHubContext.issue as PullRequest;
+    const pullRequest = this.actionContext.issue;
 
     const title: string =
-      (this.gitHubContext.payload.pull_request?.title as string) ?? "";
+      (this.actionContext.payload.pull_request?.title as string) ?? "";
 
-    core.debug("Get Title: " + title);
+    debug("Get Title: " + title);
 
     const body: string =
-      (this.gitHubContext.payload.pull_request?.body as string) ?? "";
+      (this.actionContext.payload.pull_request?.body as string) ?? "";
 
-    core.debug("Get Body: " + body);
+    debug("Get Body: " + body);
 
-    core.debug("Test title against Regex: " + this.config.TitelRegex);
+    debug("Test title against Regex: " + this.config.TitelRegex);
     let titelResult = App.testAgainstPattern(title, this.config.TitelRegex);
 
-    core.debug("Test body against Regex: " + this.config.BodyRegex);
+    debug("Test body against Regex: " + this.config.BodyRegex);
     let bodyResult = App.testAgainstPattern(body, this.config.BodyRegex);
     let comment = "";
 
@@ -41,7 +43,7 @@ export class App {
         this.config.TitelRegex
       );
 
-      core.debug("Titel regex failed");
+      debug("Titel regex failed");
     }
 
     if (!bodyResult) {
@@ -49,34 +51,34 @@ export class App {
         "%regex%",
         this.config.BodyRegex
       );
-      core.debug("Body regex failed");
+      debug("Body regex failed");
     }
 
     if (!titelResult || !bodyResult) {
       if (this.config.CreateReviewOnFailedRegex) {
-        core.debug("Create Review with comment " + comment);
+        debug("Create Review with comment " + comment);
         this.createReview(comment, pullRequest);
       }
 
       if (this.config.FailActionOnFailedRegex) {
-        core.debug("Fail action with comment " + comment);
-        core.setFailed(comment);
+        debug("Fail action with comment " + comment);
+        setFailed(comment);
       }
     } else {
       if (this.config.CreateReviewOnFailedRegex) {
-        core.debug("Dismiss review");
+        debug("Dismiss review");
         await this.dismissReview(pullRequest);
       }
     }
 
-    core.debug("Execute finished");
+    debug("Execute finished");
   }
 
   private async createReview(
     comment: string,
-    pullRequest: PullRequest
+    pullRequest: Issue
   ): Promise<void> {
-    await this.githubClient.pulls.createReview({
+    await this.client.pulls.createReview({
       owner: pullRequest.owner,
       repo: pullRequest.repo,
       pull_number: pullRequest.number,
@@ -87,16 +89,16 @@ export class App {
     });
   }
 
-  private async dismissReview(pullRequest: PullRequest): Promise<void> {
-    const reviews = await this.githubClient.pulls.listReviews({
+  private async dismissReview(pullRequest: Issue): Promise<void> {
+    const reviews = await this.client.pulls.listReviews({
       owner: pullRequest.owner,
       repo: pullRequest.repo,
       pull_number: pullRequest.number,
     });
 
     reviews.data.forEach(async (review) => {
-      if (review.user.login == "github-actions[bot]") {
-        await this.githubClient.pulls.dismissReview({
+      if (review.user?.login === "github-actions[bot]") {
+        await this.client.pulls.dismissReview({
           owner: pullRequest.owner,
           repo: pullRequest.repo,
           pull_number: pullRequest.number,
