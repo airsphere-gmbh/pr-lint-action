@@ -7,3 +7,12 @@ node_modules
 #Dist
 /dist/*
 !/dist/main.js
+
+#yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
