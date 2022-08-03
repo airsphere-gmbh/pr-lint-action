@@ -5,8 +5,8 @@
 node_modules
 
 #Dist
-/dist/*
-!/dist/main.js
+dist/*
+!dist/setup
 
 #yarn
 .yarn/*
