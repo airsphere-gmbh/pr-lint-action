@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   entry: "./src/main.ts",
-  target: "node14.15",
+  target: "node16",
   module: {
     rules: [
       {
@@ -28,7 +28,7 @@ module.exports = {
     },
   },
   output: {
-    filename: "main.js",
+    filename: "app.js",
     path: path.resolve(__dirname, "dist"),
   },
 };
