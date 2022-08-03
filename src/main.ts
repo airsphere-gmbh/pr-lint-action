@@ -1,8 +1,9 @@
 import { App } from "./app";
 import { Input } from "./input";
-import * as core from "@actions/core";
+import { getInput, setFailed } from "@actions/core";
+import { context, getOctokit } from "@actions/github";
 
-const repoTokenInput = core.getInput("repo-token", { required: true });
+const repoTokenInput = getInput("repo-token", { required: true });
 
 const titleRegexInput = Input.getInputAsString("title-regex", true);
 
@@ -36,7 +37,9 @@ const onFailedRegexRequestChanges = Input.getInput(
   Input.convertToBoolean
 );
 
-const app = new App(repoTokenInput, {
+const client = getOctokit(repoTokenInput);
+
+const app = new App(client, context, {
   BodyRegex: bodyRegexInput,
   TitelRegex: titleRegexInput,
   OnFailedBodyComment: onFailedBodyCommentInput,
@@ -45,4 +48,5 @@ const app = new App(repoTokenInput, {
   FailActionOnFailedRegex: onFailedRegexFailActionInput,
   RequestChangesOnFailedRegex: onFailedRegexRequestChanges,
 });
-app.Run().catch((error) => core.setFailed(error));
+
+app.Run().catch((error) => setFailed(error));
