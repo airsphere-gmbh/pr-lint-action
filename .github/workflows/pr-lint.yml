@@ -12,7 +12,7 @@ jobs:
   pr-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: airsphere-gmbh/pr-lint-action@work/newChangelogChanges
+      - uses: airsphere-gmbh/pr-lint-action@stable
         with:
           title-regex: '^\W*(PAX-I\d+)(\W+\w+){2,}'
           on-failed-title-comment:
