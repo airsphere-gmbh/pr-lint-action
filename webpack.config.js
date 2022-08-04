@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   entry: "./src/main.ts",
-  target: "node14.15",
+  target: "node",
   module: {
     rules: [
       {
@@ -28,7 +28,10 @@ module.exports = {
     },
   },
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: "action.js",
+    path: path.resolve(__dirname, "dist/setup"),
   },
+  experiments: {
+      topLevelAwait: true
+  }
 };
