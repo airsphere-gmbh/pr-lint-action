@@ -3,6 +3,7 @@
 
 # Packages
 node_modules
+!node_modules/@actions/github/lib/utils.d.ts
 
 #Dist
 dist/*
