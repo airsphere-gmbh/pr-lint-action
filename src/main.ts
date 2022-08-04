@@ -54,6 +54,7 @@ const app = new App(client, context, {
 app.init();
 
 try {
+  console.debug("start now");
   const value = await lastValueFrom(app.run(), { defaultValue: undefined });
   console.debug(value);
   exit(0)
