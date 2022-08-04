@@ -1,28 +1,40 @@
 import { App } from "./app";
+import { Input } from "./input";
 import * as core from "@actions/core";
 
 const repoTokenInput = core.getInput("repo-token", { required: true });
 
-const titleRegexInput: string = core.getInput("title-regex", {
-  required: true,
-});
-const bodyRegexInput: string = core.getInput("body-regex", {
-  required: true,
-});
+const titleRegexInput = Input.getInputAsString("title-regex", true);
 
-const onFailedTitelCommentInput: string = core.getInput(
-  "on-failed-titel-comment"
-);
-const onFailedBodyCommentInput: string = core.getInput(
-  "on-failed-body-comment"
+const bodyRegexInput = Input.getInputAsString("body-regex", true);
+
+const onFailedTitelCommentInput = Input.getInputAsString(
+  "on-failed-title-comment",
+  true
 );
 
-const onFailedRegexCreateReviewInput: boolean =
-  core.getInput("on-failed-regex-create-review") == "true";
-const onFailedRegexFailActionInput: boolean =
-  core.getInput("on-failed-regex-fail-action") == "true";
-const onFailedRegexRequestChanges: boolean =
-  core.getInput("on-failed-regex-request-changes") == "true";
+const onFailedBodyCommentInput = Input.getInputAsString(
+  "on-failed-body-comment",
+  true
+);
+
+const onFailedRegexCreateReviewInput = Input.getInput(
+  "on-failed-regex-create-review",
+  false,
+  Input.convertToBoolean
+);
+
+const onFailedRegexFailActionInput = Input.getInput(
+  "on-failed-regex-fail-action",
+  false,
+  Input.convertToBoolean
+);
+
+const onFailedRegexRequestChanges = Input.getInput(
+  "on-failed-regex-request-changes",
+  false,
+  Input.convertToBoolean
+);
 
 const app = new App(repoTokenInput, {
   BodyRegex: bodyRegexInput,
@@ -33,4 +45,4 @@ const app = new App(repoTokenInput, {
   FailActionOnFailedRegex: onFailedRegexFailActionInput,
   RequestChangesOnFailedRegex: onFailedRegexRequestChanges,
 });
-app.Run();
+app.Run().catch((error) => core.setFailed(error));
