@@ -1,0 +1,39 @@
+name: Continuous Integration
+on:
+  pull_request:
+    types: [opened, synchronize, reopen, unlabeled]
+  push:
+    branches:
+      - "deploy/*"
+      - "support/v*"
+      - stable
+  release:
+    types: [published]
+
+jobs:
+  run:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build action
+        run: yarn build
+
+      - name: Commit changes
+        if: github.event_name == 'push'
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Build and Commit action.js
+          committer_name: GitHub Actions
+          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
+          add: 'dist/*/**'
