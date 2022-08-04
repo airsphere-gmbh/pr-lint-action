@@ -1,37 +1,53 @@
-import * as github from "@actions/github";
-import * as core from "@actions/core";
-import { getOctokit } from "@actions/github";
+import { debug, setFailed } from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
+import {
+  map,
+  Observable,
+  from,
+  concatAll,
+  mergeMap,
+  filter,
+  of,
+  EMPTY,
+} from "rxjs";
+
+type Issue = {
+  owner: string;
+  repo: string;
+  number: number;
+};
+
+type GitHubClient = InstanceType<typeof GitHub>;
 
 export class App {
-  private readonly config: AppConfig;
-  private readonly githubClient: InstanceType<typeof GitHub>;
-  private readonly gitHubContext: Context;
+  constructor(
+    private readonly client: GitHubClient,
+    private readonly actionContext: Context,
+    private readonly config: AppConfig
+  ) {}
 
-  constructor(token: string, config: AppConfig) {
-    this.config = config;
-    this.githubClient = getOctokit(token);
-    this.gitHubContext = github.context;
-  }
+  public init() {}
 
-  public async Run(): Promise<void> {
-    const pullRequest = this.gitHubContext.issue as PullRequest;
+  public tearDown() {}
+
+  public run(): Observable<any> {
+    const pullRequest = this.actionContext.issue;
 
     const title: string =
-      (this.gitHubContext.payload.pull_request?.title as string) ?? "";
+      (this.actionContext.payload.pull_request?.title as string) ?? "";
 
-    core.debug("Get Title: " + title);
+    debug("Get Title: " + title);
 
     const body: string =
-      (this.gitHubContext.payload.pull_request?.body as string) ?? "";
+      (this.actionContext.payload.pull_request?.body as string) ?? "";
 
-    core.debug("Get Body: " + body);
+    debug("Get Body: " + body);
 
-    core.debug("Test title against Regex: " + this.config.TitelRegex);
+    debug("Test title against Regex: " + this.config.TitelRegex);
     let titelResult = App.testAgainstPattern(title, this.config.TitelRegex);
 
-    core.debug("Test body against Regex: " + this.config.BodyRegex);
+    debug("Test body against Regex: " + this.config.BodyRegex);
     let bodyResult = App.testAgainstPattern(body, this.config.BodyRegex);
     let comment = "";
 
@@ -41,7 +57,7 @@ export class App {
         this.config.TitelRegex
       );
 
-      core.debug("Titel regex failed");
+      debug("Titel regex failed");
     }
 
     if (!bodyResult) {
@@ -52,62 +68,76 @@ export class App {
         "%regex%",
         this.config.BodyRegex
       );
-      core.debug("Body regex failed");
+      debug("Body regex failed");
     }
 
     if (!titelResult || !bodyResult) {
-      if (this.config.CreateReviewOnFailedRegex) {
-        core.debug("Create Review with comment " + comment);
-        this.createReview(comment, pullRequest);
-      }
-
       if (this.config.FailActionOnFailedRegex) {
-        core.debug("Fail action with comment " + comment);
-        core.setFailed(comment);
+        debug("Fail action with comment " + comment);
+        setFailed(comment);
+      }
+      if (this.config.CreateReviewOnFailedRegex) {
+        debug("Create Review with comment " + comment);
+        return this.createReview(of([comment, pullRequest]));
       }
     } else {
       if (this.config.CreateReviewOnFailedRegex) {
-        core.debug("Dismiss review");
-        await this.dismissReview(pullRequest);
+        debug("Dismiss review");
+        return this.dismissReview(of(pullRequest));
       }
     }
 
-    core.debug("Execute finished");
+    return EMPTY;
   }
 
-  private async createReview(
-    comment: string,
-    pullRequest: PullRequest
-  ): Promise<void> {
-    await this.githubClient.pulls.createReview({
-      owner: pullRequest.owner,
-      repo: pullRequest.repo,
-      pull_number: pullRequest.number,
-      body: comment,
-      event: this.config.RequestChangesOnFailedRegex
-        ? "REQUEST_CHANGES"
-        : "COMMENT",
-    });
+  private createReview(reviews: Observable<[string, Issue]>): Observable<any> {
+    return reviews.pipe(
+      map(([comment, pullRequest]) =>
+        from(
+          this.client.pulls.createReview({
+            owner: pullRequest.owner,
+            repo: pullRequest.repo,
+            pull_number: pullRequest.number,
+            body: comment,
+            event: this.config.RequestChangesOnFailedRegex
+              ? "REQUEST_CHANGES"
+              : "COMMENT",
+          })
+        )
+      ),
+      concatAll()
+    );
   }
 
-  private async dismissReview(pullRequest: PullRequest): Promise<void> {
-    const reviews = await this.githubClient.pulls.listReviews({
-      owner: pullRequest.owner,
-      repo: pullRequest.repo,
-      pull_number: pullRequest.number,
-    });
-
-    reviews.data.forEach(async (review) => {
-      if (review.user.login == "github-actions[bot]") {
-        await this.githubClient.pulls.dismissReview({
-          owner: pullRequest.owner,
-          repo: pullRequest.repo,
-          pull_number: pullRequest.number,
-          review_id: review.id,
-          message: "All good!",
-        });
-      }
-    });
+  private dismissReview(pullRequests: Observable<Issue>): Observable<any> {
+    return pullRequests.pipe(
+      map((pullRequest) =>
+        from(
+          this.client.pulls.listReviews({
+            owner: pullRequest.owner,
+            repo: pullRequest.repo,
+            pull_number: pullRequest.number,
+          })
+        ).pipe(
+          mergeMap((response) => response.data),
+          filter((review) => review.user?.login === "github-actions[bot]"),
+          map((review) =>
+            from(
+              this.client.pulls.dismissReview({
+                owner: pullRequest.owner,
+                repo: pullRequest.repo,
+                pull_number: pullRequest.number,
+                review_id: review.id,
+                message: "All good!",
+              })
+            )
+          ),
+          concatAll(),
+          map((response) => response.data)
+        )
+      ),
+      concatAll()
+    );
   }
 
   private static testAgainstPattern(value: string, pattern: string): boolean {
