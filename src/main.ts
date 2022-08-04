@@ -3,6 +3,7 @@ import { Input } from "./input";
 import { getInput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { lastValueFrom } from "rxjs";
+import { exit } from "process";
 
 const repoTokenInput = getInput("repo-token", { required: true });
 
@@ -50,12 +51,12 @@ const app = new App(client, context, {
   RequestChangesOnFailedRegex: onFailedRegexRequestChanges,
 });
 
-// const res = await client.pulls.get();
-
 app.init();
 
 try {
-  await lastValueFrom(app.run(), { defaultValue: undefined });
+  const value = await lastValueFrom(app.run(), { defaultValue: undefined });
+  console.debug(value);
+  exit(0)
 } catch (ex: any) {
   setFailed(ex);
 } finally {
