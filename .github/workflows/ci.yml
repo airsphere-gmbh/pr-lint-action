@@ -1,14 +1,8 @@
 name: Continuous Integration
 on:
-  pull_request:
-    types: [opened, synchronize, reopen, unlabeled]
   push:
     branches:
-      - "deploy/*"
-      - "support/v*"
       - "work/*"
-  release:
-    types: [published]
 
 jobs:
   run:
