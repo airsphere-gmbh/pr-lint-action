@@ -17,13 +17,29 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          lfs: false #use cache
 
-      - name: Set up Node.js
+      - name: Cache LFS
+        uses: actions/cache@v1
+        with:
+          path: .git/lfs/objects
+          # In a push event this is the name of the branch (refs/heads/branch-name).
+          # In a pull request this names the virtual merge (refs/pulls/123/merge).
+          key: lfs-${{ github.ref }}
+          # On a cache miss take the newest cache entry this branch has access to.
+          restore-keys: lfs-
+
+      - name: Pull LFS
+        run: git lfs pull    
+        
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-
-      - name: Install dependencies
+          cache: 'yarn'
+                    
+      - name: restore packages
         run: yarn
 
       - name: Build action
