@@ -1,6 +1,7 @@
 import { debug, setFailed } from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
+
 import {
   map,
   Observable,
@@ -75,7 +76,11 @@ export class App {
       }
       if (this.config.CreateReviewOnFailedRegex) {
         debug("Create Review with comment " + comment);
-        return this.createReview(this.client, this.config, of([comment, pullRequest]));
+        return this.createReview(
+          this.client,
+          this.config,
+          of([comment, pullRequest])
+        );
       }
     } else {
       if (this.config.CreateReviewOnFailedRegex) {
@@ -87,11 +92,15 @@ export class App {
     return EMPTY;
   }
 
-  private createReview(client: GitHubClient, config: AppConfig, reviews: Observable<[string, Issue]>): Observable<any> {
+  private createReview(
+    client: GitHubClient,
+    config: AppConfig,
+    reviews: Observable<[string, Issue]>
+  ): Observable<any> {
     return reviews.pipe(
       map(([comment, pullRequest]) =>
         from(
-          client.pulls.createReview({
+          client.rest.pulls.createReview({
             owner: pullRequest.owner,
             repo: pullRequest.repo,
             pull_number: pullRequest.number,
@@ -106,11 +115,14 @@ export class App {
     );
   }
 
-  private dismissReview(client: GitHubClient, pullRequests: Observable<Issue>): Observable<any> {
+  private dismissReview(
+    client: GitHubClient,
+    pullRequests: Observable<Issue>
+  ): Observable<any> {
     return pullRequests.pipe(
       map((pullRequest) =>
         from(
-          client.pulls.listReviews({
+          client.rest.pulls.listReviews({
             owner: pullRequest.owner,
             repo: pullRequest.repo,
             pull_number: pullRequest.number,
@@ -120,7 +132,7 @@ export class App {
           filter((review) => review.user?.login === "github-actions[bot]"),
           map((review) =>
             from(
-              client.pulls.dismissReview({
+              client.rest.pulls.dismissReview({
                 owner: pullRequest.owner,
                 repo: pullRequest.repo,
                 pull_number: pullRequest.number,
@@ -142,7 +154,3 @@ export class App {
     return regex.test(value);
   }
 }
-
-//Todo:
-// Label check
-// check for structure of body
