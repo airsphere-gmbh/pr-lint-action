@@ -6,7 +6,7 @@ on:
     branches:
       - "deploy/*"
       - "support/v*"
-      - stable
+      - "work/*"
   release:
     types: [published]
 
@@ -46,7 +46,6 @@ jobs:
         run: yarn build
 
       - name: Commit changes
-        if: github.event_name == 'push'
         uses: EndBug/add-and-commit@v9
         with:
           message: Build and Commit action.js
