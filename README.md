@@ -39,6 +39,7 @@ jobs:
 ## Changelog
 
 ### v2.0
+
 - Inserted custom AirSphere functionalitys
 - Use Webpack to build and minify
 - Use directly node12 instead a docker image
