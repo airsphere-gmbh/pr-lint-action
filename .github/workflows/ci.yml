@@ -36,6 +36,18 @@ jobs:
       - name: restore packages
         run: yarn
 
+      - name: lint the project
+        run: yarn lint
+
+      - name: Commit lint changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Commit lint results
+          committer_name: GitHub Actions
+          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
+          add: "*/**"
+          push: false
+
       - name: Build action
         run: yarn build
 
