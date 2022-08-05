@@ -64,6 +64,6 @@ app.init();
 //   app.tearDown();
 // }
 lastValueFrom(app.run(), { defaultValue: undefined })
-  .then(v => console.log(v))
+  .then(_ => exit(0))
   .catch((exception) => setFailed(exception))
   .finally(() => app.tearDown());
