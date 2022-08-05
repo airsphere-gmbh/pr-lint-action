@@ -27,6 +27,7 @@
     "@actions/core": "^1.7.0",
     "@actions/github": "^5.0.1",
     "@actions/http-client": "^2.0.1",
+    "@actions/io": "^1.1.2",
     "rxjs": "^7.5.5"
   },
   "devDependencies": {
