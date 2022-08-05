@@ -35,6 +35,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@actions/io@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@actions/io@npm:1.1.2"
+  checksum: 3c6583c4557abf6c95e9cfc9b6377045e65ba2c5dd4863f4feedd6be9daf4f6b60e588ab0151d5626b5f8320a37f05b8d44ab5c329b8c19f65be31b0616e1464
+  languageName: node
+  linkType: hard
+
 "@discoveryjs/json-ext@npm:^0.5.0":
   version: 0.5.7
   resolution: "@discoveryjs/json-ext@npm:0.5.7"
@@ -1906,6 +1913,7 @@ __metadata:
     "@actions/core": ^1.7.0
     "@actions/github": ^5.0.1
     "@actions/http-client": ^2.0.1
+    "@actions/io": ^1.1.2
     "@microsoft/microsoft-graph-types": ^2.20.0
     "@types/node": 18.6.3
     "@typescript-eslint/eslint-plugin": 5.32.0
