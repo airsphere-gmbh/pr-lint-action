@@ -46,4 +46,4 @@ inputs:
     required: true
 runs:
   using: "node16"
-  main: 'dist/setup/action.js'
+  main: "dist/setup/action.js"

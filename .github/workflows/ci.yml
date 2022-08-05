@@ -25,14 +25,14 @@ jobs:
           restore-keys: lfs-
 
       - name: Pull LFS
-        run: git lfs pull    
-        
+        run: git lfs pull
+
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: 'yarn'
-                    
+          cache: "yarn"
+
       - name: restore packages
         run: yarn
 
@@ -45,5 +45,5 @@ jobs:
           message: Build and Commit action.js
           committer_name: GitHub Actions
           committer_email: 41898282+github-actions[bot]@users.noreply.github.com
-          add: 'dist/*/**'
-          push: '-f'
+          add: "dist/*/**"
+          push: "-f"

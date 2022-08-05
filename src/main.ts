@@ -54,6 +54,6 @@ const app = new App(client, context, {
 app.init();
 
 lastValueFrom(app.run(), { defaultValue: undefined })
-  .then(_ => exit(0))
+  .then((_) => exit(0))
   .catch((exception) => setFailed(exception))
   .finally(() => app.tearDown());

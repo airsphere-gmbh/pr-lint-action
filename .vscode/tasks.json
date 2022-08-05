@@ -1,25 +1,25 @@
 {
-    // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "yarn: build",
-        "type": "shell",
-        "command": "yarn build",
-        "isBackground": false,
-        "problemMatcher": {
-          "owner": "typescript",
-          "pattern": "$tsc",
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": {
-              "regexp": "(.*?)"
-            },
-            "endsPattern": {
-              "regexp": "(compiled with)|(Invalid)"
-            }
+  // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "yarn: build",
+      "type": "shell",
+      "command": "yarn build",
+      "isBackground": false,
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": {
+            "regexp": "(.*?)"
+          },
+          "endsPattern": {
+            "regexp": "(compiled with)|(Invalid)"
           }
         }
-      },
-    ]
-  }
+      }
+    }
+  ]
+}
