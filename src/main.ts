@@ -53,13 +53,17 @@ const app = new App(client, context, {
 
 app.init();
 
-try {
-  console.debug("start now");
-  const value = await lastValueFrom(app.run(), { defaultValue: undefined });
-  console.debug(value);
-  exit(0)
-} catch (ex: any) {
-  setFailed(ex);
-} finally {
-  app.tearDown();
-}
+// try {
+//   console.debug("start now");
+//   const value = await lastValueFrom(app.run(), { defaultValue: undefined });
+//   console.debug(value);
+//   exit(0)
+// } catch (ex: any) {
+//   setFailed(ex);
+// } finally {
+//   app.tearDown();
+// }
+lastValueFrom(app.run(), { defaultValue: undefined })
+  .then(_ => exit(0))
+  .catch((exception) => setFailed(exception))
+  .finally(() => app.tearDown());
