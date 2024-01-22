@@ -4,6 +4,7 @@ import { getInput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { lastValueFrom } from "rxjs";
 import { exit } from "process";
+import { GitHubClientImpl } from "./github/github";
 
 const repoTokenInput = getInput("repo-token", { required: true });
 
@@ -40,8 +41,9 @@ const onFailedRegexRequestChanges = Input.getInput(
 );
 
 const client = getOctokit(repoTokenInput);
+const gitHubClient = new GitHubClientImpl(client, context);
 
-const app = new App(client, context, {
+const app = new App(gitHubClient, {
   BodyRegex: bodyRegexInput,
   TitelRegex: titleRegexInput,
   OnFailedBodyComment: onFailedBodyCommentInput,
