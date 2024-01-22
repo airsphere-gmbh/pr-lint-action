@@ -1,54 +1,41 @@
-import { debug, setFailed } from "@actions/core";
-import { Context } from "@actions/github/lib/context";
-import { GitHub } from "@actions/github/lib/utils";
-
+import { map, Observable, filter, of, EMPTY } from "rxjs";
 import {
-  map,
-  Observable,
-  from,
-  concatAll,
-  mergeMap,
-  filter,
-  of,
-  EMPTY,
-} from "rxjs";
-
-type Issue = {
-  owner: string;
-  repo: string;
-  number: number;
-};
-
-type GitHubClient = InstanceType<typeof GitHub>;
+  CreateReview,
+  DismissReview,
+  GitHubClient,
+  PullRequest,
+  Review,
+} from "./github/github";
 
 export class App {
   constructor(
     private readonly client: GitHubClient,
-    private readonly actionContext: Context,
     private readonly config: AppConfig
   ) {}
+
+  private debug(message: string) {
+    this.client.debug(message);
+  }
 
   public init() {}
 
   public tearDown() {}
 
   public run(): Observable<any> {
-    const pullRequest = this.actionContext.issue;
+    const pullRequest = this.client.pullRequest;
 
-    const title: string =
-      (this.actionContext.payload.pull_request?.title as string) ?? "";
+    const title: string = (pullRequest.title as string) ?? "";
 
-    debug("Get Title: " + title);
+    this.debug("Get Title: " + title);
 
-    const body: string =
-      (this.actionContext.payload.pull_request?.body as string) ?? "";
+    const body: string = (pullRequest.body as string) ?? "";
 
-    debug("Get Body: " + body);
+    this.debug("Get Body: " + body);
 
-    debug("Test title against Regex: " + this.config.TitelRegex);
+    this.debug("Test title against Regex: " + this.config.TitelRegex);
     let titelResult = App.testAgainstPattern(title, this.config.TitelRegex);
 
-    debug("Test body against Regex: " + this.config.BodyRegex);
+    this.debug("Test body against Regex: " + this.config.BodyRegex);
     let bodyResult = App.testAgainstPattern(body, this.config.BodyRegex);
     let comment = "";
 
@@ -58,7 +45,7 @@ export class App {
         this.config.TitelRegex
       );
 
-      debug("Titel regex failed");
+      this.debug("Titel regex failed");
     }
 
     if (!bodyResult) {
@@ -66,25 +53,30 @@ export class App {
         "%regex%",
         this.config.BodyRegex
       );
-      debug("Body regex failed");
+      this.debug("Body regex failed");
     }
 
     if (!titelResult || !bodyResult) {
       if (this.config.FailActionOnFailedRegex) {
-        debug("Fail action with comment " + comment);
-        setFailed(comment);
+        this.debug("Fail action with comment " + comment);
+        this.client.fail(comment);
       }
       if (this.config.CreateReviewOnFailedRegex) {
-        debug("Create Review with comment " + comment);
-        return this.createReview(
-          this.client,
-          this.config,
-          of([comment, pullRequest])
-        );
+        this.debug("Create Review with comment " + comment);
+
+        const createReview: CreateReview = {
+          pullRequest: pullRequest,
+          comment: comment,
+          event: this.config.RequestChangesOnFailedRegex
+            ? "REQUEST_CHANGES"
+            : "COMMENT",
+        };
+
+        return this.client.createReview(of(createReview));
       }
     } else {
       if (this.config.CreateReviewOnFailedRegex) {
-        debug("Dismiss review");
+        this.debug("Dismiss review");
         return this.dismissReview(this.client, of(pullRequest));
       }
     }
@@ -92,61 +84,20 @@ export class App {
     return EMPTY;
   }
 
-  private createReview(
-    client: GitHubClient,
-    config: AppConfig,
-    reviews: Observable<[string, Issue]>
-  ): Observable<any> {
-    return reviews.pipe(
-      map(([comment, pullRequest]) =>
-        from(
-          client.rest.pulls.createReview({
-            owner: pullRequest.owner,
-            repo: pullRequest.repo,
-            pull_number: pullRequest.number,
-            body: comment,
-            event: config.RequestChangesOnFailedRegex
-              ? "REQUEST_CHANGES"
-              : "COMMENT",
-          })
-        )
-      ),
-      concatAll()
-    );
-  }
-
   private dismissReview(
     client: GitHubClient,
-    pullRequests: Observable<Issue>
-  ): Observable<any> {
-    return pullRequests.pipe(
-      map((pullRequest) =>
-        from(
-          client.rest.pulls.listReviews({
-            owner: pullRequest.owner,
-            repo: pullRequest.repo,
-            pull_number: pullRequest.number,
-          })
-        ).pipe(
-          mergeMap((response) => response.data),
-          filter((review) => review.user?.login === "github-actions[bot]"),
-          map((review) =>
-            from(
-              client.rest.pulls.dismissReview({
-                owner: pullRequest.owner,
-                repo: pullRequest.repo,
-                pull_number: pullRequest.number,
-                review_id: review.id,
-                message: "All good!",
-              })
-            )
-          ),
-          concatAll(),
-          map((response) => response.data)
-        )
-      ),
-      concatAll()
+    pullRequests: Observable<PullRequest>
+  ): Observable<Review> {
+    const dismisses = client.listReviews(pullRequests).pipe(
+      filter((review) => review.user?.login === "github-actions[bot]"),
+      map<Review, DismissReview>((review) => ({
+        id: review.id,
+        pullRequest: review.pullRequest,
+        message: "All good!",
+      }))
     );
+
+    return client.dismissReview(dismisses);
   }
 
   private static testAgainstPattern(value: string, pattern: string): boolean {
