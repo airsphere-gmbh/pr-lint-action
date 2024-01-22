@@ -33,10 +33,10 @@ export class App {
     this.debug("Get Body: " + body);
 
     this.debug("Test title against Regex: " + this.config.TitelRegex);
-    let titelResult = App.testAgainstPattern(title, this.config.TitelRegex);
+    const titelResult = App.testAgainstPattern(title, this.config.TitelRegex);
 
     this.debug("Test body against Regex: " + this.config.BodyRegex);
-    let bodyResult = App.testAgainstPattern(body, this.config.BodyRegex);
+    const bodyResult = App.testAgainstPattern(body, this.config.BodyRegex);
     let comment = "";
 
     if (!titelResult) {
